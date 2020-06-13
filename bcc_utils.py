@@ -1,7 +1,7 @@
-import psutil
 import sys
 
 def crawl_process_tree(proc):
+    import psutil
     """ Takes a process and returns all process ancestry until the ppid is 0 """
     procs = [proc]
     while True:

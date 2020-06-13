@@ -1,7 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 from __future__ import print_function
 from bcc import BPF
-import sys, json, traceback, psutil
+import sys, json, traceback
 from bcc.utils import ArgString, printb
 import bcc.utils as utils
 import argparse
