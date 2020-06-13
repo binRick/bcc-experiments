@@ -3,3 +3,4 @@ dump-bash-variables
 *.pyc
 .v
 *.py.2
+.attic/
