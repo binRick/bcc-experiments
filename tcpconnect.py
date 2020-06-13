@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 from __future__ import print_function
-import json, os, sys, traceback, psutil
+import json, os, sys, traceback 
 from bcc import BPF
 from bcc.utils import printb
 import argparse
