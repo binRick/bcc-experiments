@@ -1,23 +1,7 @@
-#!/usr/bin/python
-# @lint-avoid-python-3-compatibility-imports
-#
-# execsnoop Trace new processes via exec() syscalls.
-#           For Linux, uses BCC, eBPF. Embedded C.
-#
-# USAGE: execsnoop [-h] [-t] [-x] [-n NAME]
-#
-# This currently will print up to a maximum of 19 arguments, plus the process
-# name, so 20 fields in total (MAXARG).
-#
-# This won't catch all new processes: an application may fork() but not exec().
-#
-# Copyright 2016 Netflix, Inc.
-# Licensed under the Apache License, Version 2.0 (the "License")
-#
-# 07-Feb-2016   Brendan Gregg   Created this.
-
+#!/usr/bin/env python2
 from __future__ import print_function
 from bcc import BPF
+import sys, json, traceback
 from bcc.utils import ArgString, printb
 import bcc.utils as utils
 import argparse
@@ -169,8 +153,10 @@ b.attach_kretprobe(event=execve_fnname, fn_name="do_ret_sys_execve")
 
 # header
 if args.timestamp:
+    pass
     print("%-8s" % ("TIME(s)"), end="")
-print("%-16s %-6s %-6s %3s %s" % ("PCOMM", "PID", "PPID", "RET", "ARGS"))
+
+#print("%-16s %-6s %-6s %3s %s" % ("PCOMM", "PID", "PPID", "RET", "ARGS"))
 
 class EventType(object):
     EVENT_ARG = 0
@@ -220,8 +206,12 @@ def print_event(cpu, data, size):
             ppid = event.ppid if event.ppid > 0 else get_ppid(event.pid)
             ppid = b"%d" % ppid if ppid > 0 else b"?"
             argv_text = b' '.join(argv[event.pid]).replace(b'\n', b'\\n')
-            printb(b"%-16s %-6d %-6s %3d %s" % (event.comm, event.pid,
-                   ppid, event.retval, argv_text))
+            dur = int(time.time()-start_ts)
+            J = {'pid':event.pid,'exec':event.comm,'ppid':event.ppid,'dur':int(dur),'cmd':argv_text,'exit_code':event.retval,}
+            MSG = json.dumps(J)
+            print(MSG)
+            #printb(b"%-16s %-6d %-6s %3d %s" % (event.comm, event.pid,
+            #       ppid, event.retval, argv_text))
         try:
             del(argv[event.pid])
         except Exception:

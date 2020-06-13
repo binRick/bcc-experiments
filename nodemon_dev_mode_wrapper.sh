@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-DEFAULT_SCRIPT=example.sh
+DEFAULT_SCRIPT=execsnoop.sh
 
 if [[ "$1" != "" && -e "$1" ]]; then
     TARGET_SCRIPT="${TARGET_SCRIPT:-$1}"
