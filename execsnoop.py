@@ -1,12 +1,13 @@
 #!/usr/bin/env python2
 from __future__ import print_function
 from bcc import BPF
-import sys, json, traceback
+import sys, json, traceback, psutil
 from bcc.utils import ArgString, printb
 import bcc.utils as utils
 import argparse
 import re
 import time
+import bcc_utils as bcc_utils
 from collections import defaultdict
 
 # arguments
@@ -57,6 +58,7 @@ enum event_type {
 struct data_t {
     u32 pid;  // PID as in the userspace term (i.e. task->tgid in kernel)
     u32 ppid; // Parent PID as in the userspace term (i.e task->real_parent->tgid in kernel)
+    u32 uid;
     char comm[TASK_COMM_LEN];
     enum event_type type;
     char argv[ARGSIZE];
@@ -98,6 +100,7 @@ int syscall__execve(struct pt_regs *ctx,
     // as the real_parent->tgid.
     // We use the get_ppid function as a fallback in those cases. (#1883)
     data.ppid = task->real_parent->tgid;
+    data.uid = bpf_get_current_uid_gid();
 
     bpf_get_current_comm(&data.comm, sizeof(data.comm));
     data.type = EVENT_ARG;
@@ -130,6 +133,7 @@ int do_ret_sys_execve(struct pt_regs *ctx)
     // as the real_parent->tgid.
     // We use the get_ppid function as a fallback in those cases. (#1883)
     data.ppid = task->real_parent->tgid;
+    data.uid = bpf_get_current_uid_gid();
 
     bpf_get_current_comm(&data.comm, sizeof(data.comm));
     data.type = EVENT_RET;
@@ -205,9 +209,22 @@ def print_event(cpu, data, size):
                 printb(b"%-8.3f" % (time.time() - start_ts), nl="")
             ppid = event.ppid if event.ppid > 0 else get_ppid(event.pid)
             ppid = b"%d" % ppid if ppid > 0 else b"?"
+            uid = event.uid if event.uid > -1 else None
             argv_text = b' '.join(argv[event.pid]).replace(b'\n', b'\\n')
             dur = int(time.time()-start_ts)
-            J = {'pid':event.pid,'exec':event.comm,'ppid':event.ppid,'dur':int(dur),'cmd':argv_text,'exit_code':event.retval,}
+            """
+            try:
+              P = psutil.Process(event.pid)
+              ANCESTRY, PROCS = bcc_utils.crawl_process_tree(P)
+              #print(ANCESTRY)
+              #sys.exit()
+            except:
+              #traceback.print_exc()
+              ANCESTRY = None
+            """
+            ANCESTRY = None
+            J = {'pid':event.pid,'exec':event.comm,'ppid':event.ppid,'dur':int(dur),'cmd':argv_text,'exit_code':event.retval,'uid':uid,'ancestry':ANCESTRY}
+            del J['ancestry']
             MSG = json.dumps(J)
             print(MSG)
             #printb(b"%-16s %-6d %-6s %3d %s" % (event.comm, event.pid,
