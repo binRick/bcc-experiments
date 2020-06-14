@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+source setup.sh
 
 if cat /etc/redhat-release | grep 'release 7'; then
 	cmd="exec command python2 ./_tcpconnect.py"
