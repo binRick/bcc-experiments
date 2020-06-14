@@ -19,7 +19,7 @@ LOG_FILTER(){
 	tee >( \
                    grep "${2}" \
                     | setuidgid root multilog \
-                      s1000 n5 \
+                      s512 n1 \
                       ${1}/main
                 )
 }
