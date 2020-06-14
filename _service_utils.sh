@@ -1,9 +1,16 @@
 SERVICES_PATH=~/bcc-experiments/service
 LOG_USER=root
 DEFAULT_LOG_MODE=json
-LOG_FILTER_LOG_MAX_SIZE_KB=32
+MULTILOG_PROCESSOR_SCRIPT=~root/bcc-experiments/bin/MULTILOG_PROCESSOR.sh
+LOG_FILTER_LOG_MAX_SIZE_KB=100
+RECORD_RATE_FILES_ENABLED=1
+
 record_rate(){
-        command pv --force 2> "$my_rate_path" | recording_rate=1 CREATE_LOG_FILTER "$subfilter_name" "rate"
+        if [[ "$RECORD_RATE_FILES_ENABLED" == "1" ]];then
+		command pv --force 2> "$my_rate_path"
+	else
+		cat 
+	fi
 }
 
 CREATE_LOG_PATH(){
@@ -18,7 +25,7 @@ CREATE_EXEC_FILTER(){
 }
 _RAW_LOG_FILTER(){
         setuidgid $LOG_USER multilog \
-            s$((${$LOG_FILTER_LOG_MAX_SIZE_KB}*1024)) n1 \
+            s$((${LOG_FILTER_LOG_MAX_SIZE_KB}*1024)) n2 \
             ${1}/main
 
 }
@@ -26,14 +33,18 @@ RAW_LOG_FILTER(){
         tee >( _RAW_LOG_FILTER "$1" )
 }
 
+MULTILOG_PROCESSOR="!${MULTILOG_PROCESSOR_SCRIPT}"
+
 LOG_FILTER(){
         my_rate_path=${1}/rate
+	my_log_cmd=record_rate
+	#my_log_cmd="pv --force 2> $my_rate_path"
         tee >( \
                    reap -x grep "${2}" \
-                    | pv --force 2> $my_rate_path \
+                    | eval $my_log_cmd \
                     | setuidgid $LOG_USER multilog \
-                      s$((${LOG_FILTER_LOG_MAX_SIZE_KB}*1024)) n1 \
-                      ${1}/main
+                      s$((${LOG_FILTER_LOG_MAX_SIZE_KB}*1024)) n2 \
+                      ${1}/main ${MULTILOG_PROCESSOR}
                 )
 }
 
