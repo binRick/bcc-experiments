@@ -1,0 +1,5 @@
+#!/bin/bash
+export DAEMONTOOLS_SERVICE=1
+cd /
+cmd=~/bcc-experiments/tcpconnect.sh
+exec $cmd 2>&1

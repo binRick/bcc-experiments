@@ -1,0 +1,5 @@
+#!/bin/bash
+export DAEMONTOOLS_SERVICE=1
+cd /
+cmd=~/bcc-experiments/execlogger.sh
+exec $cmd 2>&1
