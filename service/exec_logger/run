@@ -3,7 +3,7 @@ set -e
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 export DAEMONTOOLS_SERVICE=1
 cmd=~root/bcc-experiments/execsnoop.sh
-source ../.etc/utils.sh
+source ../../_service_utils.sh
 
 cd / && eval $cmd 2>/dev/null \
 	  | CREATE_LOG_FILTER "ssh" \
