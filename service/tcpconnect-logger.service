@@ -1,0 +1,18 @@
+[Unit]
+Description="tcp connection logger"
+
+[Service]
+Type=idle
+Restart=always
+RestartPreventExitStatus=0
+ExecStart=/root/bcc-experiments/tcpconnect.sh
+RestartSec=15s
+# Disable timeout logic and wait until process is stopped
+TimeoutStopSec=0
+
+# SIGTERM signal is used to stop the Java process
+KillSignal=SIGTERM
+
+
+[Install]
+WantedBy=multi-user.target
