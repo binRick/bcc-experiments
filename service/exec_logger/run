@@ -7,18 +7,21 @@ source ../../_service_utils.sh
 source ../../utils.sh
 
 EXCLUDED_STRINGS="service/exec_logger|service/tcp_connection|bin/svstat service/|ls -alt service/"
-log_filter(){
-	egrep -v "$EXCLUDED_STRINGS"
-}
-#subloggers_qty="y2b_count Y2B[services][exec_logger][subloggers]"
-#echo subloggers_qty=$subloggers_qty
+REQUIRED_STRINGS='^{'
 
-cd / && eval $cmd 2>/dev/null \
-         | log_filter \
-	 | CREATE_LOG_FILTER "ssh" \
-         | CREATE_LOG_FILTER "python" \
-         | CREATE_LOG_FILTER "python2" \
-         | CREATE_LOG_FILTER "python3" \
-         | CREATE_LOG_FILTER "git"
+log_filter(){
+  command egrep -v "$EXCLUDED_STRINGS" \
+    | command grep "$REQUIRED_STRINGS"
+}
+
+
+pre_cmd="cd / && eval $cmd 2>/dev/null"
+
+
+eval $(yaml2bash /root/bcc-experiments/etc/service_config.yaml)
+log_filter_cmd="$(y2b_traverse Y2B|cut -d'=' -f2|xargs -I % echo -ne 'CREATE_LOG_FILTER %|' | sed 's/|$//g')"
+
+cmd="$pre_cmd | log_filter | $log_filter_cmd"
+eval $cmd
 
 
