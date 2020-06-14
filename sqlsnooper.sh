@@ -6,7 +6,7 @@ cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 if cat /etc/redhat-release | grep 'release 7'; then
 	cmd="command sudo -nu root command python2 ./_sqlsnooper.py"
 else
-	cmd="commnd sudo -nu root command /usr/libexec/platform-python ./_sqlsnooper.py"
+	cmd="command sudo -nu root /usr/libexec/platform-python ./_sqlsnooper.py"
 fi
 
 
