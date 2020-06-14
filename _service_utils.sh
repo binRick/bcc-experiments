@@ -4,6 +4,7 @@ DEFAULT_LOG_MODE=json
 MULTILOG_PROCESSOR_SCRIPT=~root/bcc-experiments/bin/MULTILOG_PROCESSOR.sh
 LOG_FILTER_LOG_MAX_SIZE_KB=100
 RECORD_RATE_FILES_ENABLED=1
+#eval $(yaml2bash /root/bcc-experiments/etc/service_config.yaml)
 
 record_rate(){
         if [[ "$RECORD_RATE_FILES_ENABLED" == "1" ]];then
@@ -37,17 +38,18 @@ MULTILOG_PROCESSOR="!${MULTILOG_PROCESSOR_SCRIPT}"
 
 LOG_FILTER(){
         my_rate_path=${1}/rate
-	my_log_cmd=record_rate
-	#my_log_cmd="pv --force 2> $my_rate_path"
+        my_record_rate_cmd=$record_rate
         tee >( \
                    reap -x grep "${2}" \
-                    | eval $my_log_cmd \
+                    | command pv --force 2> "$my_rate_path" \
                     | setuidgid $LOG_USER multilog \
                       s$((${LOG_FILTER_LOG_MAX_SIZE_KB}*1024)) n2 \
-                      ${1}/main ${MULTILOG_PROCESSOR}
+		      ${MULTILOG_PROCESSOR} \
+                        ${1}/main
                 )
 }
 
+#                    | eval $my_record_rate_cmd \
 
 CREATE_LOG_FILTER(){
         MY_LOG_PATH="$(CREATE_LOG_PATH "$1" "${2:-$DEFAULT_LOG_MODE}")"
