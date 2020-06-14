@@ -4,9 +4,11 @@ export DAEMONTOOLS_SERVICE=1
 cd /
 cmd=~/bcc-experiments/execsnoop.sh
 SERVICES_PATH=~/bcc-experiments/service
+LOG_USER=root
+DEFAULT_LOG_MODE=json
 
 CREATE_LOG_PATH(){
-	P=$SERVICES_PATH/exec_logger/.sublog_${1}.${2}/main
+	P=$SERVICES_PATH/exec_logger/.sublog_${1}.${2:-$DEFAULT_LOG_MODE}
 	[[ ! -d "$P" ]] && mkdir -p "$P"
 	echo -e "$P"		
 }
@@ -18,8 +20,8 @@ CREATE_EXEC_FILTER(){
 LOG_FILTER(){
 	tee >( \
                    grep "${2}" \
-                    | setuidgid root multilog \
-                      s512 n1 \
+                    | setuidgid $LOG_USER multilog \
+                      s100 n1 \
                       ${1}/main
                 )
 }
