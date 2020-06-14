@@ -4,3 +4,12 @@ dump-bash-variables
 .v
 *.py.2
 .attic/
+service/*/log/main/*
+*/supervise/*
+*/supervise/
+*/supervise
+*/log/supervise
+service/exec_logger/log/supervise/
+service/exec_logger/supervise/
+service/tcp_connection_logger/log/supervise/
+service/tcp_connection_logger/supervise/

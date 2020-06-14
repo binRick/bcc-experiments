@@ -1,5 +1,5 @@
 #!/bin/bash
 export DAEMONTOOLS_SERVICE=1
 cd /
-cmd=~/bcc-experiments/execlogger.sh
+cmd=~/bcc-experiments/execsnoop.sh
 exec $cmd 2>&1
