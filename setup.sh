@@ -1,3 +1,4 @@
+export PATH=$PATH:$(pwd)/bin
 command -v nodemon >/dev/null || npm i nodemon -g
 [[ ! -e .v/bin/activate ]] && python3 -m venv .v
 pip3 install simplejson
