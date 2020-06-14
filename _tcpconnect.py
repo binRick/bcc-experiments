@@ -1,4 +1,3 @@
-#!/usr/libexec/platform-python
 # @lint-avoid-python-3-compatibility-imports
 from __future__ import print_function
 
