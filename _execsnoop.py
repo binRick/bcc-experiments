@@ -1,4 +1,5 @@
-#!/usr/bin/env python2
+#!/usr/libexec/platform-python
+# @lint-avoid-python-3-compatibility-imports
 from __future__ import print_function
 from bcc import BPF
 import sys, json, traceback

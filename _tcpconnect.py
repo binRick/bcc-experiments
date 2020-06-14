@@ -1,11 +1,14 @@
-#!/usr/bin/env python
+#!/usr/libexec/platform-python
+# @lint-avoid-python-3-compatibility-imports
 from __future__ import print_function
-import json, os, sys, traceback 
+
 from bcc import BPF
+import json, os, sys, traceback, simplejson
 from bcc.utils import printb
 import argparse
 from socket import inet_ntop, ntohs, AF_INET, AF_INET6
 from struct import pack
+import ctypes as ct
 import bcc_utils as bcc_utils
 OUTPUT_MODE = 'json'
 # arguments
@@ -181,9 +184,38 @@ if debug or args.ebpf:
     if args.ebpf:
         exit()
 
+TASK_COMM_LEN = 16      # linux/sched.h
+
+class Data_ipv4(ct.Structure):
+    _fields_ = [
+        ("ts_us", ct.c_ulonglong),
+        ("pid", ct.c_uint),
+        ("uid", ct.c_uint),
+        ("saddr", ct.c_uint),
+        ("daddr", ct.c_uint),
+        ("ip", ct.c_ulonglong),
+        ("dport", ct.c_ushort),
+        ("task", ct.c_char * TASK_COMM_LEN)
+    ]
+
+class Data_ipv6(ct.Structure):
+    _fields_ = [
+        ("ts_us", ct.c_ulonglong),
+        ("pid", ct.c_uint),
+        ("uid", ct.c_uint),
+        ("saddr", (ct.c_ulonglong * 2)),
+        ("daddr", (ct.c_ulonglong * 2)),
+        ("ip", ct.c_ulonglong),
+        ("dport", ct.c_ushort),
+        ("task", ct.c_char * TASK_COMM_LEN)
+    ]
+
+
+
 # process event
 def print_ipv4_event(cpu, data, size):
-    event = b["ipv4_events"].event(data)
+    #event = b["ipv4_events"].event(data)
+    event = ct.cast(data, ct.POINTER(Data_ipv4)).contents
     global start_ts
     if args.timestamp:
         if start_ts == 0:
@@ -196,9 +228,9 @@ def print_ipv4_event(cpu, data, size):
         'dst_host': inet_ntop(AF_INET, pack("I", event.daddr)).encode(),
         'dst_port': int(event.dport),
         'pid': int(event.pid),
-        'ppid': int(event.ppid),
+        'ppid': int(0), #event.ppid),
         'ip_proto': int(event.ip),
-        'exec': event.task,
+        'task': event.task,
     }
     """
     try:
@@ -210,7 +242,7 @@ def print_ipv4_event(cpu, data, size):
       PROCS = None
     """
     if OUTPUT_MODE == 'json':
-      print(json.dumps(J))
+      print(simplejson.dumps(J))
     else:
       printb(b"%-6d %-12.12s %-2d %-16s %-16s %-4d" % (event.pid,
         event.task, event.ip,
