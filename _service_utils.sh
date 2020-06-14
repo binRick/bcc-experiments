@@ -1,7 +1,7 @@
 SERVICES_PATH=~/bcc-experiments/service
 LOG_USER=root
 DEFAULT_LOG_MODE=json
-
+LOG_FILTER_LOG_MAX_SIZE_KB=32
 record_rate(){
 
         pv --force 2> "$my_rate_path" | recording_rate=1 CREATE_LOG_FILTER "$subfilter_name" "rate"
@@ -19,7 +19,7 @@ CREATE_EXEC_FILTER(){
 }
 _RAW_LOG_FILTER(){
         setuidgid $LOG_USER multilog \
-            s$((32*1024)) n1 \
+            s$((${$LOG_FILTER_LOG_MAX_SIZE_KB}*1024)) n1 \
             ${1}/main
 
 }
@@ -33,7 +33,7 @@ LOG_FILTER(){
                    reap -x grep "${2}" \
                     | pv --force 2> $my_rate_path \
                     | setuidgid $LOG_USER multilog \
-                      s$((32*1024)) n1 \
+                      s$((${LOG_FILTER_LOG_MAX_SIZE_KB}*1024)) n1 \
                       ${1}/main
                 )
 }
