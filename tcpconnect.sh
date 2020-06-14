@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source setup.sh
 
 if cat /etc/redhat-release | grep 'release 7'; then
