@@ -100,16 +100,16 @@ def print_event(cpu, data, size):
     event = b["events"].event(data)
     if start == 0:
         start = event.ts
-	J = {
-	 'time': '{}'.format(float(event.ts - start) / 1000000000),
-	 'pid': int(event.pid),
-	 'ms': '{}'.format(float(event.delta) / 1000000),
-	 'query': '{}'.format(event.query),
-	}
-	MSG = json.dumps(J)
-	print(MSG)
-    print("%-14.6f %-6d %8.3f %s" % (float(event.ts - start) / 1000000000,
-        event.pid, float(event.delta) / 1000000, event.query))
+    J = {
+	'time': '{}'.format(float(event.ts - start) / 1000000000),
+	'pid': int(event.pid),
+	'ms': '{}'.format(float(event.delta) / 1000000),
+	'query': '{}'.format(event.query),
+    }
+    MSG = json.dumps(J)
+    print(MSG)
+    #print("%-14.6f %-6d %8.3f %s" % (float(event.ts - start) / 1000000000,
+    #    event.pid, float(event.delta) / 1000000, event.query))
 
 # loop with callback to print_event
 b["events"].open_perf_buffer(print_event, page_cnt=64)
