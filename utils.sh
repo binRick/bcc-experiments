@@ -1,11 +1,13 @@
 get_my_pids(){
 	(for pid in $(ps -ao pid=); do cat /proc/$pid/environ 2>/dev/null  |tr '\0' '\n' |grep -q ^BCC_EXPERIMENTS_PROCESS=1$ && echo $pid; done)|sort -u|grep '^[0-9]'
 }
-kill_my_pids()(
+kill_my_pids(){
+  (
 	while get_my_pids; do 
-		kill $(get_my_pids) && sleep 1 && kill -9 $(get_my_pids); sleep .1; 
+		kill $(get_my_pids) && sleep 5 && kill -9 $(get_my_pids); sleep 1; 
 	done
-)
+  ) >/dev/null 2>&1
+}
 uuid(){
     local N B T
 
