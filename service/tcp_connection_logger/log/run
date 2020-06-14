@@ -2,5 +2,5 @@
 export DAEMONTOOLS_SERVICE=1
 export DAEMONTOOLS_LOG_SERVICE=1
 [ ! -d "./main" ] && /bin/mkdir ./main
-_lp="/bin/setuidgid root /bin/multilog t s10048576 n20 ./main"
+_lp="setuidgid root /bin/multilog t s10048576 n20 ./main"
 exec $_lp
