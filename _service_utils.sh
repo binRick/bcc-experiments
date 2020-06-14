@@ -3,12 +3,11 @@ LOG_USER=root
 DEFAULT_LOG_MODE=json
 
 record_rate(){
-
-        pv --force 2> "$my_rate_path" | recording_rate=1 CREATE_LOG_FILTER "$subfilter_name" "rate"
+        command pv --force 2> "$my_rate_path" | recording_rate=1 CREATE_LOG_FILTER "$subfilter_name" "rate"
 }
 
 CREATE_LOG_PATH(){
-        P=$SERVICES_PATH/exec_logger/.sublog_${1}.${2:-$DEFAULT_LOG_MODE}
+        P="$SERVICES_PATH/exec_logger/.sublog_${1}"
         [[ ! -d "$P" ]] && mkdir -p "$P"
         echo -e "$P"
 }
@@ -40,7 +39,7 @@ LOG_FILTER(){
 
 
 CREATE_LOG_FILTER(){
-        MY_LOG_PATH="$(CREATE_LOG_PATH "$1" "$2")"
+        MY_LOG_PATH="$(CREATE_LOG_PATH "$1" "${2:-$DEFAULT_LOG_MODE}")"
         if [[ "$recording_rate" == "1" ]]; then
                 RAW_LOG_FILTER "$MY_LOG_PATH" "$MY_LOG_FILTER"
         else
