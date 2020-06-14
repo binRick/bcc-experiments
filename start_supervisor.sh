@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+export INIT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ctrlc_count=0
 source utils.sh
 trap no_ctrlc SIGINT

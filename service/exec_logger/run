@@ -4,18 +4,21 @@ cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 export DAEMONTOOLS_SERVICE=1
 cmd=~root/bcc-experiments/execsnoop.sh
 source ../../_service_utils.sh
+source ../../utils.sh
 
 EXCLUDED_STRINGS="service/exec_logger|service/tcp_connection|bin/svstat service/|ls -alt service/"
 log_filter(){
 	egrep -v "$EXCLUDED_STRINGS"
 }
+#subloggers_qty="y2b_count Y2B[services][exec_logger][subloggers]"
+#echo subloggers_qty=$subloggers_qty
 
 cd / && eval $cmd 2>/dev/null \
-	  | log_filter \
-	  | CREATE_LOG_FILTER "ssh" \
-	  | CREATE_LOG_FILTER "python" \
-	  | CREATE_LOG_FILTER "python2" \
-	  | CREATE_LOG_FILTER "python3" \
-	  | CREATE_LOG_FILTER "git" \
+         | log_filter \
+	 | CREATE_LOG_FILTER "ssh" \
+         | CREATE_LOG_FILTER "python" \
+         | CREATE_LOG_FILTER "python2" \
+         | CREATE_LOG_FILTER "python3" \
+         | CREATE_LOG_FILTER "git"
 
 

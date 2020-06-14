@@ -1,0 +1,10 @@
+---
+
+services:
+  exec_logger:
+    subloggers:
+        - name: ssh        
+        - name: python        
+        - name: python2        
+        - name: python3        
+        - name: git        

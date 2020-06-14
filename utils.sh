@@ -1,3 +1,12 @@
+create_service_log_filter_cmd(){
+  load_service_config_yaml_config && \
+    y2b_traverse Y2B[services][exec_logger][subloggers] |cut -d'=' -f2|xargs -I {} \
+	echo -e '| CREATE_LOG_FILTER "{}" \'
+}
+load_service_config_yaml_config(){
+	INIT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+	eval $(yaml2bash $INIT_DIR/etc/service_config.yaml)
+}
 get_my_pids(){
 	(for pid in $(ps -ao pid=); do cat /proc/$pid/environ 2>/dev/null  |tr '\0' '\n' |grep -q ^BCC_EXPERIMENTS_PROCESS=1$ && echo $pid; done)|sort -u|grep '^[0-9]'
 }
