@@ -5,7 +5,13 @@ export DAEMONTOOLS_SERVICE=1
 cmd=~root/bcc-experiments/execsnoop.sh
 source ../../_service_utils.sh
 
+EXCLUDED_STRINGS="service/exec_logger|service/tcp_connection|bin/svstat service/|ls -alt service/"
+log_filter(){
+	egrep -v "$EXCLUDED_STRINGS"
+}
+
 cd / && eval $cmd 2>/dev/null \
+	  | log_filter \
 	  | CREATE_LOG_FILTER "ssh" \
 	  | CREATE_LOG_FILTER "python" \
 	  | CREATE_LOG_FILTER "python2" \
