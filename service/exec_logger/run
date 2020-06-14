@@ -1,5 +1,34 @@
 #!/bin/bash
+
 export DAEMONTOOLS_SERVICE=1
 cd /
 cmd=~/bcc-experiments/execsnoop.sh
-exec $cmd 2>&1
+SERVICES_PATH=~/bcc-experiments/service
+
+CREATE_LOG_PATH(){
+	P=$SERVICES_PATH/exec_logger/.sublog_${1}.${2}/main
+	[[ ! -d "$P" ]] && mkdir -p "$P"
+	echo -e "$P"		
+}
+
+CREATE_EXEC_FILTER(){
+	echo -e "\"exec\": \"${1}\""
+}
+
+LOG_FILTER(){
+	tee >( \
+                   grep "${2}" \
+                    | setuidgid root multilog \
+                      s1000 n5 \
+                      ${1}/main
+                )
+}
+
+CREATE_LOG_FILTER(){
+	LOG_FILTER "$(CREATE_LOG_PATH "$1" "$2")" "$(CREATE_EXEC_FILTER "$1")"
+}
+
+$cmd 2>&1 \
+	  | CREATE_LOG_FILTER "ssh" \
+
+
