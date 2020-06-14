@@ -15,15 +15,15 @@ CREATE_EXEC_FILTER(){
         echo -e "\"exec\": \"${1}\""
 }
 MULTILOG_PROCESSOR="!${MULTILOG_PROCESSOR_SCRIPT}"
+#				       ${MULTILOG_PROCESSOR} \
 
 LOG_FILTER(){
         my_rate_path=${1}/rate
-        command grep "${2}" | command pv --force 2> "$my_rate_path" | command reap -x \
 		command tee >( \
+command grep "${2}" | command pv --force 2> "$my_rate_path" | command reap -x \
 		                   command setuidgid $LOG_USER \
 				     command multilog \
 				       s$((${LOG_FILTER_LOG_MAX_SIZE_KB}*1024)) n2 \
-				       ${MULTILOG_PROCESSOR} \
 			  	       ${1}/main
                               )
 }
