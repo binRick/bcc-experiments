@@ -5,5 +5,5 @@ done
 [[ ! -e .v/bin/activate ]] && python3 -m venv .v
 (set +e; pip3 install simplejson >/dev/null 2>&1)
 source .v/bin/activate
-pip install simplejson
+pip install simplejson tmuxp
 #pip install psutil bcc loguru
