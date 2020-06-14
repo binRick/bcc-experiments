@@ -3,5 +3,5 @@ set -e
 
 BCC_EXPERIMENTS_PROCESS=1 \
     PATH=$PATH:$(pwd)/bin \
-    reap -vx \
+    reap -x \
     ./bin/svscan service/.
