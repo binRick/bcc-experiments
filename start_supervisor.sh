@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-PATH=$PATH:$(pwd)/bin ./bin/svscan service/
+BCC_EXPERIMENTS_PROCESS=1 \
+    PATH=$PATH:$(pwd)/bin \
+    reap -vx \
+    ./bin/svscan service/.

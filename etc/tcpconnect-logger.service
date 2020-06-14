@@ -5,7 +5,7 @@ Description="tcp connection logger"
 Type=idle
 Restart=always
 RestartPreventExitStatus=0
-ExecStart=/root/bcc-experiments/tcpconnect.sh
+ExecStart=/root/bcc-experiments/start_supervisor.sh
 RestartSec=15s
 # Disable timeout logic and wait until process is stopped
 TimeoutStopSec=0
