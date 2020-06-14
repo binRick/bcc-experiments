@@ -1,0 +1,6 @@
+#!/bin/bash
+export DAEMONTOOLS_SERVICE=1
+export DAEMONTOOLS_LOG_SERVICE=1
+[ ! -d "./main" ] && /bin/mkdir ./main
+_lp="setuidgid root multilog t s10048576 n20 ./main"
+exec $_lp

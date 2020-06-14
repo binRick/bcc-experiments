@@ -1,0 +1,7 @@
+#!/usr/bin/bash 
+set -e
+export DAEMONTOOLS_SERVICE=1
+cd /root/bcc-experiments
+cmd=/root/bcc-experiments/tlssnooper.py
+#source /root/bcc-experiments/.v/bin/activate
+exec $cmd 2>/dev/null
