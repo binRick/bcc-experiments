@@ -2,7 +2,8 @@
 from __future__ import print_function
 
 from bcc import BPF
-import json, os, sys, traceback, simplejson
+import json, os, sys, traceback
+#, simplejson
 from bcc.utils import printb
 import argparse
 from socket import inet_ntop, ntohs, AF_INET, AF_INET6
@@ -241,7 +242,7 @@ def print_ipv4_event(cpu, data, size):
       PROCS = None
     """
     if OUTPUT_MODE == 'json':
-      print(simplejson.dumps(J))
+      print(json.dumps(J))
     else:
       printb(b"%-6d %-12.12s %-2d %-16s %-16s %-4d" % (event.pid,
         event.task, event.ip,
