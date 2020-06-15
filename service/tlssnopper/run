@@ -1,7 +1,10 @@
 #!/usr/bin/bash 
 set -e
+cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 export DAEMONTOOLS_SERVICE=1
-cd /root/bcc-experiments
-cmd=/root/bcc-experiments/tlssnooper.py
-#source /root/bcc-experiments/.v/bin/activate
+#:wsource ../../vars.sh
+BCC_EXPERIMENTS_PATH=$(cd ../../ && pwd)
+cd $BCC_EXPERIMENTS_PATH
+cmd=$BCC_EXPERIMENTS_PATH/tlssnooper.sh
+#source $BCC_EXPERIMENTS_PATH/.v/bin/activate
 exec $cmd 2>/dev/null
