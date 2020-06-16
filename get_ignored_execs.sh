@@ -1,1 +1,5 @@
-cat .ignored_execs.txt |tr '\n' '|'|sed 's/|$//g'
+( \
+ cat .ignored_execs.txt 
+
+ ) \
+    |tr '\n' '|'|sed 's/|$//g'

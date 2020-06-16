@@ -14,3 +14,4 @@ service/exec_logger/supervise/
 service/tcp_connection_logger/log/supervise/
 service/tcp_connection_logger/supervise/
 *.sublog*json*
+.execs

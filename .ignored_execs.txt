@@ -71,3 +71,15 @@ bin/grep
 bin/grep
 bin/ps
 mes-site-layout/direnv
+bin/tmux
+bin/sudo
+"exec": "perl"
+bin/comm
+"exec": "chmod"
+"exec": ".vp"
+"exec": "jo"
+/usr/libexec/rhsmcertd-worker
+bin/ansibtail
+"exec": "sed"
+bin/strace
+/usr/libexec/git-core/git

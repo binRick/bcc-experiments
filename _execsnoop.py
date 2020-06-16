@@ -49,7 +49,7 @@ bpf_text = """
 #include <linux/sched.h>
 #include <linux/fs.h>
 
-#define ARGSIZE  128
+#define ARGSIZE  256
 
 enum event_type {
     EVENT_ARG,
@@ -148,7 +148,7 @@ int do_ret_sys_execve(struct pt_regs *ctx)
 }
 """
 
-bpf_text = bpf_text.replace("MAXARG", args.max_args)
+bpf_text = bpf_text.replace("MAXARG", '40')
 if args.ebpf:
     print(bpf_text)
     exit()
